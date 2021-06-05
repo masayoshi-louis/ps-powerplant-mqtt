@@ -1,0 +1,11 @@
+Device:
+  Name: 'P10'
+  Host: 'localhost'
+  Port: 80
+  Username: ''
+  Password: ''
+MQTT:
+  Host: 'localhost'
+  Port: 1883
+  Username: ''
+  Password: ''
