@@ -158,9 +158,9 @@ func pushState() error {
 	}
 	for _, z := range list {
 		logrus.Infof("mqtt publish begin, zone id:%d", z.Id)
-		powerState := "off"
+		powerState := "OFF"
 		if z.On == 1 {
-			powerState = "on"
+			powerState = "ON"
 		} else if z.On < 0 {
 			continue
 		}
