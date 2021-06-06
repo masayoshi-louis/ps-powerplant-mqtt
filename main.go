@@ -142,15 +142,6 @@ type zone struct {
 	On int64 `json:"on"`
 }
 
-//type statusResponse struct {
-//	XMLName     xml.Name `xml:"response"`
-//	zones         []server `xml:"server"`
-//}
-//
-//type statusResponseZone struct {
-//	XMLName xml.Name `xml:"servers"`
-//}
-
 func pushState() error {
 	list, err := listZones()
 	if err != nil {
