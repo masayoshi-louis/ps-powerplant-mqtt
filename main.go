@@ -115,7 +115,7 @@ func setState(z *zone) error {
 	if err != nil {
 		return errors.Wrap(err, "list zone error")
 	}
-	cz := list[z.Id-1]
+	cz := list[z.Id]
 	if cz.On == z.On {
 		return nil
 	}
@@ -188,6 +188,16 @@ func listZones() ([]*zone, error) {
 	}
 	var zones []*zone
 	doc, err := xmlquery.Parse(bytes.NewReader(respBody))
+	xmlquery.FindEach(doc, "//power", func(i int, node *xmlquery.Node) {
+		on, err := strconv.ParseInt(node.FirstChild.Data, 10, 0)
+		if err != nil {
+			on = -1
+		}
+		zones = append(zones, &zone{
+			Id: 0,
+			On: on,
+		})
+	})
 	xmlquery.FindEach(doc, "//*[starts-with(local-name(), 'zone')]", func(i int, node *xmlquery.Node) {
 		on, err := strconv.ParseInt(node.FirstChild.Data, 10, 0)
 		if err != nil {
