@@ -138,7 +138,7 @@ func setState(z *zone) error {
 }
 
 type zone struct {
-	Id int64 `json:"oa"`
+	Id int64 `json:"id"`
 	On int64 `json:"on"`
 }
 
