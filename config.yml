@@ -2,6 +2,8 @@ Device:
   Name: 'P10'
   Host: 'localhost'
   Port: 80
+  Zones: 5
+  PollInterval: '300ms'
   Username: ''
   Password: ''
 MQTT:

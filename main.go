@@ -20,11 +20,13 @@ import (
 
 var config struct {
 	Device struct {
-		Name     string `yaml:"Name"`
-		Host     string `yaml:"Host"`
-		Port     int64  `yaml:"Port"`
-		Username string `yaml:"Username"`
-		Password string `yaml:"Password"`
+		Name         string `yaml:"Name"`
+		Host         string `yaml:"Host"`
+		Port         int64  `yaml:"Port"`
+		Zones        int    `yaml:"Zones"`
+		PollInterval string `yaml:"PollInterval"`
+		Username     string `yaml:"Username"`
+		Password     string `yaml:"Password"`
 	} `yaml:"Device"`
 	MQTT struct {
 		Host     string `yaml:"Host"`
@@ -38,16 +40,23 @@ var mqttClient mqtt.Client
 
 func main() {
 	initConfig()
+	pollInterval, err := time.ParseDuration(config.Device.PollInterval)
+	if err != nil {
+		logrus.WithError(err).Error("config error")
+		panic(err)
+	}
+
 	initMQTT()
 	mqttSubscribe()
+
 	for {
 		logrus.Info("push state begin")
 		err := pushState()
 		if err != nil {
 			logrus.WithError(err).Error("push state error")
 		}
-		time.Sleep(500 * time.Millisecond)
 		logrus.Info("push state end")
+		time.Sleep(pollInterval)
 	}
 }
 
@@ -190,6 +199,9 @@ func listZones() ([]*zone, error) {
 		})
 	})
 	xmlquery.FindEach(doc, "//*[starts-with(local-name(), 'zone')]", func(i int, node *xmlquery.Node) {
+		if i >= config.Device.Zones {
+			return
+		}
 		on, err := strconv.ParseInt(node.FirstChild.Data, 10, 0)
 		if err != nil {
 			on = -1
